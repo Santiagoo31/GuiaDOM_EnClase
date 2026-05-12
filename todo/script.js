@@ -1,6 +1,4 @@
-// --- NUEVO: Definir la API con la IP del PC ---
-const API_URL = "http://192.168.1.100:3000"; 
-// ⚠️ Reemplaza 192.168.1.100 con la IP real de tu PC en la red local
+const API_URL = "http://10.5.225.184:5500/todo/"; 
 
 // 1. SELECCIÓN DE ELEMENTOS
 const formBusqueda = document.getElementById('messageForm'); 

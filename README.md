@@ -1,4 +1,4 @@
-# PROYECTO BASE: [Nombre de la Aplicación] - Software Factory SENA
+# PROYECTO BASE: Introducción a la manipulación del DOM - Software Factory SENA
 
 **Metodología:** *"Del Requerimiento al Producto"*
 

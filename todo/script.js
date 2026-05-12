@@ -1,3 +1,7 @@
+// --- NUEVO: Definir la API con la IP del PC ---
+const API_URL = "http://192.168.1.100:3000"; 
+// ⚠️ Reemplaza 192.168.1.100 con la IP real de tu PC en la red local
+
 // 1. SELECCIÓN DE ELEMENTOS
 const formBusqueda = document.getElementById('messageForm'); 
 const inputId = document.getElementById('userName'); 
@@ -18,15 +22,14 @@ inputId.addEventListener('input', function() {
         return;
     }
 
-    fetch(`http://localhost:3000/users/${id}`)
+    fetch(`${API_URL}/users/${id}`)
         .then(res => {
             if (!res.ok) throw new Error();
             return res.json();
         })
         .then(usuario => {
-            // Mostramos el nombre apenas lo encuentra
             mensajeError.innerText = `Usuario: ${usuario.name}`;
-            mensajeError.style.color = "#3498db"; // Un azul para diferenciar
+            mensajeError.style.color = "#3498db";
         })
         .catch(() => {
             mensajeError.innerText = "Buscando usuario...";
@@ -47,8 +50,7 @@ formBusqueda.onsubmit = function(e) {
         return;
     }
 
-    // PASO 1: Validar y obtener datos finales
-    fetch(`http://localhost:3000/users/${idBuscado}`)
+    fetch(`${API_URL}/users/${idBuscado}`)
         .then(response => {
             if (!response.ok) throw new Error("No existe");
             return response.json();
@@ -61,8 +63,7 @@ formBusqueda.onsubmit = function(e) {
                 estado: "Pendiente"
             };
 
-            // PASO 2: Guardar en el servidor
-            return fetch('http://localhost:3000/tareas', {
+            return fetch(`${API_URL}/tareas`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(nuevaTarea)
@@ -70,7 +71,6 @@ formBusqueda.onsubmit = function(e) {
         })
         .then(resPost => resPost.json())
         .then(tareaFinal => {
-            // PASO 3: Mostrar abajo en la tabla y dejarla ahí
             mensajeError.innerText = `¡Tarea registrada para ${tareaFinal.nombreUsuario}!`;
             mensajeError.style.color = "green";
 
@@ -106,3 +106,41 @@ function agregarFilaTabla(nombre, id, descripcion, estado) {
         contadorTexto.innerText = `${totalTareas} tareas registradas`;
     }
 }
+
+// --- NUEVO: Guardar y cargar tareas en LocalStorage ---
+function guardarTareas() {
+    const filas = tablaTareas.querySelectorAll('tr');
+    const tareas = [];
+
+    filas.forEach(fila => {
+        const celdas = fila.querySelectorAll('td');
+        if (celdas.length > 0) {
+            tareas.push({
+                id: celdas[0].innerText,
+                nombre: celdas[1].innerText,
+                descripcion: celdas[2].innerText,
+                estado: celdas[3].innerText
+            });
+        }
+    });
+
+    localStorage.setItem('tareasGuardadas', JSON.stringify(tareas));
+}
+
+function cargarTareas() {
+    const tareasGuardadas = JSON.parse(localStorage.getItem('tareasGuardadas')) || [];
+    if (tareasGuardadas.length > 0) {
+        if (emptyState) emptyState.style.display = "none";
+        tareasGuardadas.forEach(t => {
+            agregarFilaTabla(t.nombre, t.id, t.descripcion, t.estado);
+        });
+    }
+}
+
+const originalAgregarFila = agregarFilaTabla;
+agregarFilaTabla = function(nombre, id, descripcion, estado) {
+    originalAgregarFila(nombre, id, descripcion, estado);
+    guardarTareas();
+};
+
+window.addEventListener('DOMContentLoaded', cargarTareas);

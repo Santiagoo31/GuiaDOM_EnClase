@@ -1,6 +1,7 @@
-const API_URL = "http://10.5.225.184:5500/todo/"; 
+// 0. CONFIGURACIÓN DINÁMICA DE LA IP
+const API_URL = `http://${window.location.hostname}:3000`; 
 
-// 1. SELECCIÓN DE ELEMENTOS
+// 1. SELECCIÓN DE ELEMENTOS DEL DOM
 const formBusqueda = document.getElementById('messageForm'); 
 const inputId = document.getElementById('userName'); 
 const inputTareaDesc = document.getElementById('userMessage'); 
@@ -11,7 +12,7 @@ const contadorTexto = document.getElementById('messageCount');
 
 let totalTareas = 0;
 
-// --- NUEVO: BUSCAR NOMBRE MIENTRAS ESCRIBES EL ID ---
+// BUSCAR NOMBRE MIENTRA SE ESCRIBE EL ID
 inputId.addEventListener('input', function() {
     const id = this.value.trim();
     
@@ -26,7 +27,7 @@ inputId.addEventListener('input', function() {
             return res.json();
         })
         .then(usuario => {
-            mensajeError.innerText = `Usuario: ${usuario.name}`;
+            mensajeError.innerText = `Usuario encontrado: ${usuario.name}`;
             mensajeError.style.color = "#3498db";
         })
         .catch(() => {
@@ -35,7 +36,7 @@ inputId.addEventListener('input', function() {
         });
 });
 
-// 2. EVENTO DE ENVÍO (Para registrar la tarea)
+// 2. EVENTO DE ENVÍO (Validar y Guardar Tarea)
 formBusqueda.onsubmit = function(e) {
     e.preventDefault(); 
 
@@ -48,12 +49,14 @@ formBusqueda.onsubmit = function(e) {
         return;
     }
 
+    // PASO 1: Verificar que el usuario existe en el servidor
     fetch(`${API_URL}/users/${idBuscado}`)
         .then(response => {
             if (!response.ok) throw new Error("No existe");
             return response.json();
         })
         .then(usuario => {
+            // PASO 2: Crear el objeto de la nueva tarea
             const nuevaTarea = {
                 idUsuario: usuario.id,
                 nombreUsuario: usuario.name,
@@ -61,6 +64,7 @@ formBusqueda.onsubmit = function(e) {
                 estado: "Pendiente"
             };
 
+            // PASO 3: Guardar en db.json usando POST
             return fetch(`${API_URL}/tareas`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -69,25 +73,24 @@ formBusqueda.onsubmit = function(e) {
         })
         .then(resPost => resPost.json())
         .then(tareaFinal => {
+            // ÉXITO: Actualizar interfaz
             mensajeError.innerText = `¡Tarea registrada para ${tareaFinal.nombreUsuario}!`;
             mensajeError.style.color = "green";
 
             agregarFilaTabla(tareaFinal.nombreUsuario, tareaFinal.idUsuario, tareaFinal.descripcion, tareaFinal.estado);
-            
             formBusqueda.reset();
         })
         .catch(error => {
-            mensajeError.innerText = "Error: Usuario no encontrado.";
+            mensajeError.innerText = "Error: Usuario no encontrado o servidor apagado.";
             mensajeError.style.color = "red";
         });
 };
 
-// 3. FUNCIÓN PARA AGREGAR FILAS
+// 3. FUNCIÓN PARA AGREGAR FILAS A LA TABLA
 function agregarFilaTabla(nombre, id, descripcion, estado) {
     if (emptyState) emptyState.style.display = "none";
 
     const fila = document.createElement('tr');
-    
     fila.innerHTML = `
         <td style="padding: 10px; border: 1px solid #ddd;">${id}</td>
         <td style="padding: 10px; border: 1px solid #ddd;">${nombre}</td>
@@ -96,7 +99,6 @@ function agregarFilaTabla(nombre, id, descripcion, estado) {
             <span style="color: orange; font-weight: bold;">${estado}</span>
         </td>
     `;
-
     tablaTareas.appendChild(fila);
 
     totalTareas++;
@@ -104,41 +106,3 @@ function agregarFilaTabla(nombre, id, descripcion, estado) {
         contadorTexto.innerText = `${totalTareas} tareas registradas`;
     }
 }
-
-// --- NUEVO: Guardar y cargar tareas en LocalStorage ---
-function guardarTareas() {
-    const filas = tablaTareas.querySelectorAll('tr');
-    const tareas = [];
-
-    filas.forEach(fila => {
-        const celdas = fila.querySelectorAll('td');
-        if (celdas.length > 0) {
-            tareas.push({
-                id: celdas[0].innerText,
-                nombre: celdas[1].innerText,
-                descripcion: celdas[2].innerText,
-                estado: celdas[3].innerText
-            });
-        }
-    });
-
-    localStorage.setItem('tareasGuardadas', JSON.stringify(tareas));
-}
-
-function cargarTareas() {
-    const tareasGuardadas = JSON.parse(localStorage.getItem('tareasGuardadas')) || [];
-    if (tareasGuardadas.length > 0) {
-        if (emptyState) emptyState.style.display = "none";
-        tareasGuardadas.forEach(t => {
-            agregarFilaTabla(t.nombre, t.id, t.descripcion, t.estado);
-        });
-    }
-}
-
-const originalAgregarFila = agregarFilaTabla;
-agregarFilaTabla = function(nombre, id, descripcion, estado) {
-    originalAgregarFila(nombre, id, descripcion, estado);
-    guardarTareas();
-};
-
-window.addEventListener('DOMContentLoaded', cargarTareas);

@@ -79,6 +79,27 @@
       "nombreUsuario": "Diego Herrera",
       "descripcion": "crear una web",
       "estado": "Pendiente"
+    },
+    {
+      "id": "41b6",
+      "idUsuario": "1",
+      "nombreUsuario": "Ana Torres",
+      "descripcion": "Una tarea",
+      "estado": "Pendiente"
+    },
+    {
+      "id": "59e5",
+      "idUsuario": "3",
+      "nombreUsuario": "María López",
+      "descripcion": "Otra tarea",
+      "estado": "Pendiente"
+    },
+    {
+      "id": "5ac4",
+      "idUsuario": "5",
+      "nombreUsuario": "Laura Martínez",
+      "descripcion": "Ultima tarea",
+      "estado": "Pendiente"
     }
   ]
 }

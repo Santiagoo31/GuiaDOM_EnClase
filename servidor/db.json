@@ -53,52 +53,38 @@
   ],
   "tareas": [
     {
-      "id": "9133",
-      "idUsuario": "4",
-      "nombreUsuario": "Juan Pérez",
-      "descripcion": "hacer una web",
-      "estado": "Pendiente"
-    },
-    {
-      "id": "5b95",
-      "idUsuario": "1",
-      "nombreUsuario": "Ana Torres",
-      "descripcion": "agregar",
-      "estado": "Pendiente"
-    },
-    {
-      "id": "f9fb",
-      "idUsuario": "10",
-      "nombreUsuario": "Diego Herrera",
-      "descripcion": "edita el codigo",
-      "estado": "Pendiente"
-    },
-    {
-      "id": "af55",
-      "idUsuario": "10",
-      "nombreUsuario": "Diego Herrera",
-      "descripcion": "crear una web",
-      "estado": "Pendiente"
-    },
-    {
-      "id": "41b6",
-      "idUsuario": "1",
-      "nombreUsuario": "Ana Torres",
-      "descripcion": "Una tarea",
-      "estado": "Pendiente"
-    },
-    {
-      "id": "59e5",
+      "id": "b216",
       "idUsuario": "3",
       "nombreUsuario": "María López",
-      "descripcion": "Otra tarea",
+      "descripcion": "fdgdf",
       "estado": "Pendiente"
     },
     {
-      "id": "5ac4",
-      "idUsuario": "5",
-      "nombreUsuario": "Laura Martínez",
-      "descripcion": "Ultima tarea",
+      "id": "7e6a",
+      "idUsuario": "3",
+      "nombreUsuario": "María López",
+      "descripcion": "asdad",
+      "estado": "Pendiente"
+    },
+    {
+      "id": "df7e",
+      "idUsuario": 6,
+      "nombreUsuario": "Pedro Sánchez",
+      "descripcion": "33",
+      "estado": "Pendiente"
+    },
+    {
+      "id": "90d6",
+      "idUsuario": 3,
+      "nombreUsuario": "María López",
+      "descripcion": "dsfsdfs",
+      "estado": "Pendiente"
+    },
+    {
+      "id": "5cfc",
+      "idUsuario": 6,
+      "nombreUsuario": "Pedro Sánchez",
+      "descripcion": "fgdgd",
       "estado": "Pendiente"
     }
   ]

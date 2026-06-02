@@ -53,38 +53,10 @@
   ],
   "tareas": [
     {
-      "id": "b216",
-      "idUsuario": "3",
-      "nombreUsuario": "María López",
-      "descripcion": "fdgdf",
-      "estado": "Pendiente"
-    },
-    {
-      "id": "7e6a",
-      "idUsuario": "3",
-      "nombreUsuario": "María López",
-      "descripcion": "asdad",
-      "estado": "Pendiente"
-    },
-    {
-      "id": "df7e",
-      "idUsuario": 6,
-      "nombreUsuario": "Pedro Sánchez",
-      "descripcion": "33",
-      "estado": "Pendiente"
-    },
-    {
-      "id": "90d6",
-      "idUsuario": 3,
-      "nombreUsuario": "María López",
-      "descripcion": "dsfsdfs",
-      "estado": "Pendiente"
-    },
-    {
-      "id": "5cfc",
-      "idUsuario": 6,
-      "nombreUsuario": "Pedro Sánchez",
-      "descripcion": "fgdgd",
+      "id": "46b3",
+      "idUsuario": 1,
+      "nombreUsuario": "Ana Torres",
+      "descripcion": "hacer tarea",
       "estado": "Pendiente"
     }
   ]

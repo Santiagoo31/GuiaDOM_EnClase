@@ -53,10 +53,24 @@
   ],
   "tareas": [
     {
-      "id": "46b3",
+      "id": "29d6",
       "idUsuario": 1,
       "nombreUsuario": "Ana Torres",
-      "descripcion": "hacer tarea",
+      "descripcion": "Sed minus ducimus r",
+      "estado": "Pendiente"
+    },
+    {
+      "id": "5d19",
+      "idUsuario": 1,
+      "nombreUsuario": "Ana Torres",
+      "descripcion": "Ut libero dolore tem",
+      "estado": "Pendiente"
+    },
+    {
+      "id": "4d3c",
+      "idUsuario": 2,
+      "nombreUsuario": "Carlos Gómez",
+      "descripcion": "tareas  Editar",
       "estado": "Pendiente"
     }
   ]

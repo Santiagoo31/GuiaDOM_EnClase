@@ -152,25 +152,81 @@ function agregarFilaTabla(idTarea, nombre, idUsuario, descripcion, estado) {
     const fila = document.createElement('tr');
     fila.dataset.id = idTarea; 
 
+    // Definición dinámica de estilos visuales según el estado de la tarea
+    const esCompletada = estado === "Completada";
+    const colorEstado = esCompletada ? "#27ae60" : "#e67e22";
+    const textoBotonEstado = esCompletada ? "Reabrir" : "Hecha";
+    const estiloDecoracionTexto = esCompletada ? "line-through; color: gray;" : "none;";
+
     fila.innerHTML = `
         <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">${idUsuario}</td>
         <td style="padding: 10px; border: 1px solid #ddd;">${nombre}</td>
-        <td style="padding: 10px; border: 1px solid #ddd;" class="descripcion-celda">${descripcion}</td>
+        <td style="padding: 10px; border: 1px solid #ddd; text-decoration: ${estiloDecoracionTexto}" class="descripcion-celda">${descripcion}</td>
         <td style="padding: 10px; border: 1px solid #ddd;">
-            <span style="color: #e67e22; font-weight: bold;">${estado}</span>
+            <span class="estado-tag" style="color: ${colorEstado}; font-weight: bold;">${estado}</span>
         </td>
         <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">
+            <button class="btn-estado" style="background-color: ${esCompletada ? '#7f8c8d' : '#2ecc71'}; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px; margin-right: 2px;">${textoBotonEstado}</button>
             <button class="btn-editar">Editar</button>
             <button class="btn-eliminar">Eliminar</button>
         </td>
     `;
 
+    // Asignación de eventos dinámicos a los botones
+    fila.querySelector('.btn-estado').onclick = () => cambiarEstadoTarea(idTarea, estado, fila);
     fila.querySelector('.btn-editar').onclick = () => actualizarTarea(idTarea, fila);
     fila.querySelector('.btn-eliminar').onclick = () => eliminarTarea(idTarea, fila);
 
     tablaTareas.appendChild(fila);
     totalTareas++;
     actualizarContadorInterfaz();
+}
+
+// NUEVO RF: FUNCIÓN PARA CAMBIAR EL ESTADO (PENDIENTE <-> COMPLETADA) MEDIANTE SOLICITUD PATCH
+function cambiarEstadoTarea(id, estadoActual, filaHTML) {
+    // Si estaba Pendiente pasa a Completada, si no, regresa a Pendiente
+    const nuevoEstado = estadoActual === "Pendiente" ? "Completada" : "Pendiente";
+
+    fetch(`${API_URL}/tareas/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estado: nuevoEstado })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error();
+        return res.json();
+    })
+    .then(tareaActualizada => {
+        lanzarNotificacion(`Estado de tarea cambiado a: ${tareaActualizada.estado}`, "green", "#e8f8f5");
+        
+        // Localizamos las celdas afectadas dentro de la fila del DOM actual para actualizarlas de inmediato
+        const celdaTexto = filaHTML.querySelector('.descripcion-celda');
+        const etiquetaEstado = filaHTML.querySelector('.estado-tag');
+        const botonEstado = filaHTML.querySelector('.btn-estado');
+
+        // Actualizamos los textos y los estilos del renglón sin necesidad de recargar toda la tabla
+        etiquetaEstado.innerText = tareaActualizada.estado;
+        
+        if (tareaActualizada.estado === "Completada") {
+            celdaTexto.style.textDecoration = "line-through";
+            celdaTexto.style.color = "gray";
+            etiquetaEstado.style.color = "#27ae60";
+            botonEstado.innerText = "Reabrir";
+            botonEstado.style.backgroundColor = "#7f8c8d";
+        } else {
+            celdaTexto.style.textDecoration = "none";
+            celdaTexto.style.color = "black";
+            etiquetaEstado.style.color = "#e67e22";
+            botonEstado.innerText = "Hecha";
+            botonEstado.style.backgroundColor = "#2ecc71";
+        }
+
+        // Modificamos el evento del botón para que guarde la referencia al nuevo estado actual
+        botonEstado.onclick = () => cambiarEstadoTarea(id, tareaActualizada.estado, filaHTML);
+    })
+    .catch(() => {
+        lanzarNotificacion("Error: No se pudo cambiar el estado de la tarea en el servidor.", "red", "#fdedec");
+    });
 }
 
 // 4. RF-01: CONSULTAR LA INFORMACIÓN TOTAL DE LA API AL INICIAR LA APLICACIÓN
